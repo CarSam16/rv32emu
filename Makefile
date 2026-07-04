@@ -403,6 +403,10 @@ EXPECTED_mmu = STORE PAGE FAULT TEST PASSED!
 mmu-test: $(BIN)
 	$(call check-test, , tests/system/mmu/vm.elf, vm.elf, tail -n 1,$(EXPECTED_mmu))
 
+EXPECTED_vector_arith = VECTOR ARITH TEST PASSED!
+vector-arith-test: $(BIN)
+	$(call check-test, , tests/system/vector_arith/vector_arith.elf, vector_arith.elf, tail -n 1,$(EXPECTED_vector_arith))
+
 # Non-trivial demonstration programs
 ifeq ($(call has, SDL), 1)
 doom_action := (cd $(OUT); LC_ALL=C ../$(BIN) riscv32/doom)

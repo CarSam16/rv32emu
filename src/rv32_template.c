@@ -3249,7 +3249,7 @@ RVOP(
 #define GET_VSEW(vtype) (((vtype) >> 3) & 0x7)
 #define GET_VLMUL(vtype) ((vtype) & 0x7)
 
-Agnostic fill values based on SEW 
+/* Agnostic fill values based on SEW */
 #define AGNOSTIC_FILL_8b   0xFF
 #define AGNOSTIC_FILL_16b  0xFFFF
 #define AGNOSTIC_FILL_32b  0xFFFFFFFF 

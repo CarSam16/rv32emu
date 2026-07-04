@@ -206,6 +206,13 @@ jobs:
             make -C tests/system/mmu/
             make distclean && make ENABLE_ELF_LOADER=1 ENABLE_SYSTEM=1 mmu-test -j$(nproc)
       if: ${{ always() }}
+    - name: vector arithmetic test
+      env:
+        CC: ${{ steps.install_cc.outputs.cc }}
+      run: |
+            make -C tests/system/vector_arith/
+            make distclean && make ENABLE_EXT_V=1 VLEN=128 ENABLE_ELF_LOADER=1 ENABLE_SYSTEM=1 vector-arith-test -j$(nproc)
+      if: ${{ always() }}
     - name: gdbstub test
       env:
         CC: ${{ steps.install_cc.outputs.cc }}
