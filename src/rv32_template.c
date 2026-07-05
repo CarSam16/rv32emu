@@ -3128,7 +3128,8 @@ RVOP(
                 rv->csr_vtype = ir->zimm;
             }
         }
-        rv->X[ir->rd] = rv->csr_vl;
+        if (ir->rd)
+            rv->X[ir->rd] = rv->csr_vl;
     },
     GEN({
         assert; /* FIXME: Implement */
@@ -3160,7 +3161,8 @@ RVOP(
                 rv->csr_vtype = ir->zimm;
             }
         }
-        rv->X[ir->rd] = rv->csr_vl;
+        if (ir->rd)
+            rv->X[ir->rd] = rv->csr_vl;
     },
     GEN({
         assert; /* FIXME: Implement */
@@ -3192,7 +3194,8 @@ RVOP(
                 rv->csr_vtype = rv->X[ir->rs2];
             }
         }
-        rv->X[ir->rd] = rv->csr_vl;
+        if (ir->rd)
+            rv->X[ir->rd] = rv->csr_vl;
     },
     GEN({
         assert; /* FIXME: Implement */
@@ -3303,7 +3306,7 @@ RVOP(
             rv->V[des + j][i] = 0xFFFFFFFF;                                        \
         }                                                                          \
         /* vta=0: keep old value */                                                \
-        return; /* No body elements to process */                                  \
+        /* body_count == 0: no body elements, the loop below is a no-op */         \
     }                                                                              \
                                                                                    \
     /* Step 2: Process body elements */                                            \
@@ -3377,7 +3380,6 @@ RVOP(
         if (vta) {                                                                 \
             rv->V[des + j][i] = 0xFFFFFFFF;                                        \
         }                                                                          \
-        return;                                                                    \
     }                                                                              \
                                                                                    \
     for (uint8_t k = 0; k < body_count; k++) {                                     \
@@ -3445,7 +3447,6 @@ RVOP(
         if (vta) {                                                                 \
             rv->V[des + j][i] = 0xFFFFFFFF;                                        \
         }                                                                          \
-        return;                                                                    \
     }                                                                              \
                                                                                    \
     for (uint8_t k = 0; k < body_count; k++) {                                     \
@@ -3513,7 +3514,7 @@ RVOP(
                 }                                                              \
                 __j++;                                                         \
             }                                                                  \
-        }                    
+        }                                                                     \
     }
 
 #define sew_16b_handler(des, op1, op2, op, op_type)                         \
@@ -3638,7 +3639,7 @@ RVOP(
             }
             /* Clear corresponding bits of eews */
             if (rv->csr_vl % 4) {
-                rv->V[ir->vd + j][i] %= 0xFFFFFFFF << ((rv->csr_vl % 4) << 3);
+                rv->V[ir->vd + j][i] &= 0xFFFFFFFF << ((rv->csr_vl % 4) << 3);
             }
             /* Handle eews that is narrower then a word */
             for (uint32_t cnt = 0; cnt < (rv->csr_vl % 4); cnt++) {

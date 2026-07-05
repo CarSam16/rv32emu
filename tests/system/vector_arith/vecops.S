@@ -115,15 +115,23 @@ vec_add_full_vta_noop:
  * register is preloaded with a sentinel pattern before the vadd.vv so the
  * untouched tail word (index 3) must retain that exact sentinel rather
  * than being zeroed or filled.
+ *
+ * The sentinel preload must happen at vl=vlmax=4: a unit-stride load only
+ * fetches vl elements from memory, so loading v3 while vl is already
+ * narrowed to 3 would leave element 3 untouched by the load itself
+ * (still whatever v3 held beforehand) instead of seeding it with
+ * preload[3].
  */
 .globl vec_add_vta0_undisturbed
 .type vec_add_vta0_undisturbed, @function
 vec_add_vta0_undisturbed:
+    li      t0, 4
+    vsetvli t1, t0, e32, m1, tu, mu
+    vle32.v v3, (a2)
     li      t0, 3
     vsetvli t1, t0, e32, m1, tu, mu
     vle32.v v1, (a0)
     vle32.v v2, (a1)
-    vle32.v v3, (a2)
     vadd.vv v3, v2, v1
     vsetvli t1, x0, e32, m1, tu, mu
     vse32.v v3, (a3)

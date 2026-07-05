@@ -1242,9 +1242,9 @@ CONSTOPT(bseti, {
 
 /* Vector Extension */
 #if RV32_HAS(EXT_V)
-CONSTOPT(vsetvli, {})
-CONSTOPT(vsetivli, {})
-CONSTOPT(vsetvl, {})
+CONSTOPT(vsetvli, { if (ir->rd) info->is_constant[ir->rd] = false; })
+CONSTOPT(vsetivli, { if (ir->rd) info->is_constant[ir->rd] = false; })
+CONSTOPT(vsetvl, { if (ir->rd) info->is_constant[ir->rd] = false; })
 CONSTOPT(vle8_v, {})
 CONSTOPT(vle16_v, {})
 CONSTOPT(vle32_v, {})
